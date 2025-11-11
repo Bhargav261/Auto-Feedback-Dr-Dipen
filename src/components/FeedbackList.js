@@ -1,16 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
+import { useNavigate } from 'react-router-dom';
 import { feedbackMessages } from '../data/feedbackMessages';
+import { subscribeToUsedFeedbacks } from '../firebase/feedbackService';
 import './FeedbackList.css';
 
 const FeedbackList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [qrCodes, setQrCodes] = useState({});
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [usedFeedbacks, setUsedFeedbacks] = useState([]);
   const qrCanvasRefs = useRef({});
+  const navigate = useNavigate();
 
   // Your deployed domain - UPDATE THIS after deployment
   const BASE_URL = window.location.origin; // Uses current domain automatically
+
+  // Subscribe to used feedbacks real-time updates
+  useEffect(() => {
+    const unsubscribe = subscribeToUsedFeedbacks((feedbacks) => {
+      setUsedFeedbacks(feedbacks.map(f => parseInt(f.id)));
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Generate QR codes for visible feedbacks
   useEffect(() => {
@@ -45,22 +58,25 @@ const FeedbackList = () => {
     };
 
     generateQRCodes();
-  }, [searchTerm, selectedCategory, BASE_URL]);
+  }, [searchTerm, selectedCategory, usedFeedbacks, BASE_URL]);
 
   // Filter feedbacks by search term and category
   const getFilteredFeedbacks = () => {
     return feedbackMessages
       .map((feedback, index) => ({ feedback, id: index }))
-      .filter(({ feedback }) => {
+      .filter(({ feedback, id }) => {
+        // Filter out used feedbacks
+        const isNotUsed = !usedFeedbacks.includes(id);
         const matchesSearch = feedback.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = selectedCategory === 'all' ||
           (selectedCategory === 'dental' && feedback.toLowerCase().includes('dental')) ||
           (selectedCategory === 'physio' && (feedback.toLowerCase().includes('physio') || feedback.toLowerCase().includes('therapy')));
-        return matchesSearch && matchesCategory;
+        return isNotUsed && matchesSearch && matchesCategory;
       });
   };
 
   const filteredFeedbacks = getFilteredFeedbacks();
+  const availableCount = feedbackMessages.length - usedFeedbacks.length;
 
   // Download QR code
   const downloadQR = (id) => {
@@ -147,6 +163,9 @@ const FeedbackList = () => {
           Choose a feedback message below. Each has a unique QR code that customers can scan
           to automatically copy the text and leave a Google review.
         </p>
+        <button onClick={() => navigate('/admin')} className="admin-mode-btn">
+          🔐 Admin Mode
+        </button>
       </div>
 
       {/* Search and Filter */}
@@ -185,7 +204,10 @@ const FeedbackList = () => {
 
       {/* Results Count */}
       <div className="results-info">
-        Showing {filteredFeedbacks.length} of {feedbackMessages.length} feedback messages
+        Showing {filteredFeedbacks.length} of {availableCount} available feedback messages
+        {usedFeedbacks.length > 0 && (
+          <span className="used-count"> ({usedFeedbacks.length} used)</span>
+        )}
       </div>
 
       {/* Feedback List */}

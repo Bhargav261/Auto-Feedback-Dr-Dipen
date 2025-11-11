@@ -1,0 +1,51 @@
+npm install firebase
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyA5VyZUANZxY8gsiY84ShG3RXJMeKa2tNg",
+  authDomain: "auto-review-system-c3aee.firebaseapp.com",
+  projectId: "auto-review-system-c3aee",
+  storageBucket: "auto-review-system-c3aee.firebasestorage.app",
+  messagingSenderId: "63694167171",
+  appId: "1:63694167171:web:e4de005e7552f63a350fb6",
+  measurementId: "G-2E48KZFRRL"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+
+
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyA5VyZUANZxY8gsiY84ShG3RXJMeKa2tNg",
+    authDomain: "auto-review-system-c3aee.firebaseapp.com",
+    projectId: "auto-review-system-c3aee",
+    storageBucket: "auto-review-system-c3aee.firebasestorage.app",
+    messagingSenderId: "63694167171",
+    appId: "1:63694167171:web:e4de005e7552f63a350fb6",
+    measurementId: "G-2E48KZFRRL"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
