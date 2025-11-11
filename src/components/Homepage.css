@@ -143,12 +143,28 @@ html {
    ======================================== */
 .hero-section {
   position: relative;
-  background: linear-gradient(135deg, #1976d2 0%, #0d47a1 50%, #00bcd4 100%);
+  /* Background image - Add your hero image here */
+  background-image:
+    linear-gradient(135deg, rgba(25, 118, 210, 0.85) 0%, rgba(13, 71, 161, 0.85) 50%, rgba(0, 188, 212, 0.85) 100%),
+    url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gNDAgMCBMIDAgMCAwIDQwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--white);
   padding: 120px 40px 100px;
   text-align: center;
   overflow: hidden;
 }
+
+/* Optional: Add your custom hero image by uncommenting and replacing the path below */
+/*
+.hero-section {
+  background-image:
+    linear-gradient(135deg, rgba(25, 118, 210, 0.85) 0%, rgba(13, 71, 161, 0.85) 50%, rgba(0, 188, 212, 0.85) 100%),
+    url('/images/hero-background.jpg');
+}
+*/
 
 .hero-overlay {
   position: absolute;
@@ -160,6 +176,7 @@ html {
     radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
   animation: float 8s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes float {
@@ -511,6 +528,195 @@ html {
 .service-btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   TEAM SECTION
+   ======================================== */
+.team-section {
+  background: var(--bg-light);
+  text-align: center;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.team-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 0;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.team-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
+}
+
+.doctor-image-placeholder {
+  width: 100%;
+  height: 280px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-teal));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-image-placeholder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.doctor-image-placeholder .placeholder-icon {
+  font-size: 100px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 10px;
+}
+
+.doctor-image-placeholder .image-note {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  color: var(--white);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.doctor-info {
+  padding: 30px;
+  text-align: center;
+}
+
+.doctor-info h3 {
+  font-size: 24px;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.designation {
+  font-size: 16px;
+  color: var(--primary-blue);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.qualification {
+  font-size: 14px;
+  color: var(--text-medium);
+  margin-bottom: 8px;
+}
+
+.experience {
+  font-size: 14px;
+  color: var(--accent-green);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.specialization {
+  font-size: 14px;
+  color: var(--text-medium);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ========================================
+   GALLERY SECTION
+   ======================================== */
+.gallery-section {
+  background: var(--white);
+  text-align: center;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 60px;
+}
+
+.gallery-item {
+  background: var(--white);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.gallery-item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.gallery-image-placeholder {
+  width: 100%;
+  height: 220px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-teal));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-image-placeholder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 60%);
+}
+
+.gallery-image-placeholder .placeholder-icon {
+  font-size: 80px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 10px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.gallery-image-placeholder .image-note {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  color: var(--white);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
+  border-radius: 15px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.gallery-caption {
+  padding: 20px;
+  font-size: 15px;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin: 0;
 }
 
 /* ========================================
@@ -1011,6 +1217,14 @@ html {
     grid-template-columns: 1fr;
   }
 
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .footer-content {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
@@ -1060,6 +1274,14 @@ html {
   }
 
   .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid {
     grid-template-columns: 1fr;
   }
 

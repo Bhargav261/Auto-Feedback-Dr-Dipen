@@ -197,6 +197,64 @@ const Homepage = () => {
         </div>
       </section>
 
+      {/* Meet Our Team */}
+      <section className="team-section">
+        <div className="section-container">
+          <div className="section-badge">Our Experts</div>
+          <h2 className="section-title">Meet Our Professional Team</h2>
+          <p className="section-subtitle">
+            Experienced healthcare professionals dedicated to providing you with the best care
+          </p>
+
+          <div className="team-grid">
+            {/* Doctor 1 */}
+            <div className="team-card">
+              <div className="doctor-image-placeholder">
+                <div className="placeholder-icon">👨‍⚕️</div>
+                <span className="image-note">Add doctor photo</span>
+              </div>
+              <div className="doctor-info">
+                <h3>Dr. [Your Name]</h3>
+                <p className="designation">Chief Dentist</p>
+                <p className="qualification">BDS, MDS</p>
+                <p className="experience">15+ Years Experience</p>
+                <p className="specialization">Specialist in Root Canal & Cosmetic Dentistry</p>
+              </div>
+            </div>
+
+            {/* Doctor 2 */}
+            <div className="team-card">
+              <div className="doctor-image-placeholder">
+                <div className="placeholder-icon">👨‍⚕️</div>
+                <span className="image-note">Add doctor photo</span>
+              </div>
+              <div className="doctor-info">
+                <h3>Dr. [Your Name]</h3>
+                <p className="designation">Senior Physiotherapist</p>
+                <p className="qualification">BPT, MPT</p>
+                <p className="experience">12+ Years Experience</p>
+                <p className="specialization">Specialist in Sports Injury & Rehabilitation</p>
+              </div>
+            </div>
+
+            {/* Doctor 3 */}
+            <div className="team-card">
+              <div className="doctor-image-placeholder">
+                <div className="placeholder-icon">👨‍⚕️</div>
+                <span className="image-note">Add doctor photo</span>
+              </div>
+              <div className="doctor-info">
+                <h3>Dr. [Your Name]</h3>
+                <p className="designation">Dental Surgeon</p>
+                <p className="qualification">BDS</p>
+                <p className="experience">10+ Years Experience</p>
+                <p className="specialization">Specialist in Oral Surgery & Implants</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Why Choose Us */}
       <section className="features-section">
         <div className="section-container">
@@ -233,6 +291,73 @@ const Homepage = () => {
               <div className="feature-icon">🛡️</div>
               <h4>Safe & Hygienic</h4>
               <p>Strict sterilization protocols and hygiene standards for your safety</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Clinic Gallery */}
+      <section className="gallery-section">
+        <div className="section-container">
+          <div className="section-badge">Our Facility</div>
+          <h2 className="section-title">Take A Virtual Tour</h2>
+          <p className="section-subtitle">
+            Experience our modern, state-of-the-art clinic designed for your comfort and care
+          </p>
+
+          <div className="gallery-grid">
+            {/* Gallery Item 1 */}
+            <div className="gallery-item">
+              <div className="gallery-image-placeholder">
+                <div className="placeholder-icon">🏥</div>
+                <span className="image-note">Reception Area</span>
+              </div>
+              <p className="gallery-caption">Modern Reception Area</p>
+            </div>
+
+            {/* Gallery Item 2 */}
+            <div className="gallery-item">
+              <div className="gallery-image-placeholder">
+                <div className="placeholder-icon">🦷</div>
+                <span className="image-note">Dental Room</span>
+              </div>
+              <p className="gallery-caption">Advanced Dental Care Room</p>
+            </div>
+
+            {/* Gallery Item 3 */}
+            <div className="gallery-item">
+              <div className="gallery-image-placeholder">
+                <div className="placeholder-icon">💪</div>
+                <span className="image-note">Physio Room</span>
+              </div>
+              <p className="gallery-caption">Physiotherapy Treatment Room</p>
+            </div>
+
+            {/* Gallery Item 4 */}
+            <div className="gallery-item">
+              <div className="gallery-image-placeholder">
+                <div className="placeholder-icon">🪑</div>
+                <span className="image-note">Waiting Area</span>
+              </div>
+              <p className="gallery-caption">Comfortable Waiting Area</p>
+            </div>
+
+            {/* Gallery Item 5 */}
+            <div className="gallery-item">
+              <div className="gallery-image-placeholder">
+                <div className="placeholder-icon">🔬</div>
+                <span className="image-note">Equipment</span>
+              </div>
+              <p className="gallery-caption">Modern Medical Equipment</p>
+            </div>
+
+            {/* Gallery Item 6 */}
+            <div className="gallery-item">
+              <div className="gallery-image-placeholder">
+                <div className="placeholder-icon">🏢</div>
+                <span className="image-note">Exterior</span>
+              </div>
+              <p className="gallery-caption">Clinic Exterior View</p>
             </div>
           </div>
         </div>
