@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { useNavigate } from 'react-router-dom';
-import { feedbackMessages } from '../data/feedbackMessages';
+import { getAllFeedbacks, getFeedbacksByCategory, getCategoryCount } from '../data/feedbackMessages';
 import { subscribeToUsedFeedbacks } from '../firebase/feedbackService';
 import './FeedbackList.css';
 
@@ -62,21 +62,31 @@ const FeedbackList = () => {
 
   // Filter feedbacks by search term and category
   const getFilteredFeedbacks = () => {
-    return feedbackMessages
-      .map((feedback, index) => ({ feedback, id: index }))
+    const categoryFeedbacks = getFeedbacksByCategory(selectedCategory);
+
+    return categoryFeedbacks
+      .map((feedback, index) => {
+        // Calculate correct ID based on category
+        let actualId;
+        if (selectedCategory === 'all') {
+          actualId = index;
+        } else if (selectedCategory === 'dental') {
+          actualId = index; // Dental starts at 0
+        } else if (selectedCategory === 'physio') {
+          actualId = index + 100; // Physio starts at 100
+        }
+        return { feedback, id: actualId };
+      })
       .filter(({ feedback, id }) => {
         // Filter out used feedbacks
         const isNotUsed = !usedFeedbacks.includes(id);
         const matchesSearch = feedback.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === 'all' ||
-          (selectedCategory === 'dental' && feedback.toLowerCase().includes('dental')) ||
-          (selectedCategory === 'physio' && (feedback.toLowerCase().includes('physio') || feedback.toLowerCase().includes('therapy')));
-        return isNotUsed && matchesSearch && matchesCategory;
+        return isNotUsed && matchesSearch;
       });
   };
 
   const filteredFeedbacks = getFilteredFeedbacks();
-  const availableCount = feedbackMessages.length - usedFeedbacks.length;
+  const availableCount = getAllFeedbacks().length - usedFeedbacks.length;
 
   // Download QR code
   const downloadQR = (id) => {
@@ -141,7 +151,7 @@ const FeedbackList = () => {
         <body>
           <h2>Scan to Review Us!</h2>
           <img src="${qrDataUrl}" alt="QR Code ${id}" />
-          <div class="feedback">"${feedbackMessages[id]}"</div>
+          <div class="feedback">"${getAllFeedbacks()[id]}"</div>
           <div class="business">Ansh Dental And Physio Care</div>
           <p style="margin-top: 20px; color: #999; font-size: 12px;">Feedback #${id}</p>
         </body>
@@ -185,19 +195,19 @@ const FeedbackList = () => {
             className={`filter-btn ${selectedCategory === 'all' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('all')}
           >
-            All ({feedbackMessages.length})
+            All ({getAllFeedbacks().length})
           </button>
           <button
             className={`filter-btn ${selectedCategory === 'dental' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('dental')}
           >
-            🦷 Dental
+            🦷 Dental ({getCategoryCount('dental')})
           </button>
           <button
             className={`filter-btn ${selectedCategory === 'physio' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('physio')}
           >
-            💪 Physio
+            💪 Physio ({getCategoryCount('physio')})
           </button>
         </div>
       </div>

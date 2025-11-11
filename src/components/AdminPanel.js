@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
-import { feedbackMessages } from '../data/feedbackMessages';
+import { getAllFeedbacks } from '../data/feedbackMessages';
 import {
   subscribeToUsedFeedbacks,
   markFeedbackAsUsed,
@@ -80,18 +80,20 @@ const AdminPanel = ({ onLogout, onBackToHome }) => {
   // Get available feedbacks (not used)
   const getAvailableFeedbacks = () => {
     const usedIds = usedFeedbacks.map(f => parseInt(f.id));
-    return feedbackMessages
+    const allFeedbacks = getAllFeedbacks();
+    return allFeedbacks
       .map((feedback, index) => ({ feedback, id: index }))
       .filter(({ id }) => !usedIds.includes(id));
   };
 
   // Get used feedbacks with details
   const getUsedFeedbacksWithDetails = () => {
+    const allFeedbacks = getAllFeedbacks();
     return usedFeedbacks
       .map(used => ({
         ...used,
         id: parseInt(used.id),
-        feedback: feedbackMessages[parseInt(used.id)]
+        feedback: allFeedbacks[parseInt(used.id)]
       }))
       .sort((a, b) => new Date(b.markedDate) - new Date(a.markedDate));
   };
@@ -436,7 +438,7 @@ const AdminPanel = ({ onLogout, onBackToHome }) => {
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon">📝</div>
-                <div className="stat-value">{feedbackMessages.length}</div>
+                <div className="stat-value">{getAllFeedbacks().length}</div>
                 <div className="stat-label">Total Feedbacks</div>
               </div>
 
@@ -455,7 +457,7 @@ const AdminPanel = ({ onLogout, onBackToHome }) => {
               <div className="stat-card">
                 <div className="stat-icon">📈</div>
                 <div className="stat-value">
-                  {((statistics.total / feedbackMessages.length) * 100).toFixed(1)}%
+                  {((statistics.total / getAllFeedbacks().length) * 100).toFixed(1)}%
                 </div>
                 <div className="stat-label">Usage Rate</div>
               </div>

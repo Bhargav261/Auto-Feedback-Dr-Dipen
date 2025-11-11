@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
-import { feedbackMessages } from '../data/feedbackMessages';
+import { getAllFeedbacks, getFeedbacksByCategory, getCategoryCount } from '../data/feedbackMessages';
 import {
   subscribeToUsedFeedbacks,
   markFeedbackAsUsed,
@@ -81,25 +81,36 @@ const FeedbackManagement = () => {
   // Get available feedbacks
   const getFilteredFeedbacks = () => {
     const usedIds = usedFeedbacks.map(f => parseInt(f.id));
-    return feedbackMessages
-      .map((feedback, index) => ({ feedback, id: index }))
+    const categoryFeedbacks = getFeedbacksByCategory(selectedCategory);
+
+    return categoryFeedbacks
+      .map((feedback, index) => {
+        // Calculate correct ID based on category
+        let actualId;
+        if (selectedCategory === 'all') {
+          actualId = index;
+        } else if (selectedCategory === 'dental') {
+          actualId = index; // Dental starts at 0
+        } else if (selectedCategory === 'physio') {
+          actualId = index + 100; // Physio starts at 100
+        }
+        return { feedback, id: actualId };
+      })
       .filter(({ feedback, id }) => {
         const isNotUsed = !usedIds.includes(id);
         const matchesSearch = feedback.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === 'all' ||
-          (selectedCategory === 'dental' && feedback.toLowerCase().includes('dental')) ||
-          (selectedCategory === 'physio' && (feedback.toLowerCase().includes('physio') || feedback.toLowerCase().includes('therapy')));
-        return isNotUsed && matchesSearch && matchesCategory;
+        return isNotUsed && matchesSearch;
       });
   };
 
   // Get used feedbacks with details
   const getUsedFeedbacksWithDetails = () => {
+    const allFeedbacks = getAllFeedbacks();
     return usedFeedbacks
       .map(used => ({
         ...used,
         id: parseInt(used.id),
-        feedback: feedbackMessages[parseInt(used.id)]
+        feedback: allFeedbacks[parseInt(used.id)]
       }))
       .sort((a, b) => new Date(b.markedDate) - new Date(a.markedDate));
   };
@@ -210,7 +221,8 @@ const FeedbackManagement = () => {
 
   const filteredFeedbacks = getFilteredFeedbacks();
   const usedFeedbacksDetails = getUsedFeedbacksWithDetails();
-  const availableCount = feedbackMessages.length - usedFeedbacks.length;
+  const totalCount = getAllFeedbacks().length;
+  const availableCount = totalCount - usedFeedbacks.length;
 
   return (
     <div className="feedback-management-container">
@@ -374,7 +386,7 @@ const FeedbackManagement = () => {
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon">📝</div>
-                <div className="stat-value">{feedbackMessages.length}</div>
+                <div className="stat-value">{totalCount}</div>
                 <div className="stat-label">Total Feedbacks</div>
               </div>
               <div className="stat-card">
@@ -390,7 +402,7 @@ const FeedbackManagement = () => {
               <div className="stat-card">
                 <div className="stat-icon">📈</div>
                 <div className="stat-value">
-                  {((statistics.total / feedbackMessages.length) * 100).toFixed(1)}%
+                  {((statistics.total / totalCount) * 100).toFixed(1)}%
                 </div>
                 <div className="stat-label">Usage Rate</div>
               </div>

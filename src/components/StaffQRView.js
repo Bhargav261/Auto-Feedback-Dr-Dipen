@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
-import { feedbackMessages } from '../data/feedbackMessages';
+import { getAllFeedbacks, getFeedbacksByCategory, getCategoryCount } from '../data/feedbackMessages';
 import {
   subscribeToUsedFeedbacks,
   markFeedbackAsUsed,
@@ -73,15 +73,25 @@ const StaffQRView = () => {
 
   // Filter available feedbacks
   const getFilteredFeedbacks = () => {
-    return feedbackMessages
-      .map((feedback, index) => ({ feedback, id: index }))
+    const categoryFeedbacks = getFeedbacksByCategory(selectedCategory);
+
+    return categoryFeedbacks
+      .map((feedback, index) => {
+        // Calculate correct ID based on category
+        let actualId;
+        if (selectedCategory === 'all') {
+          actualId = index;
+        } else if (selectedCategory === 'dental') {
+          actualId = index; // Dental starts at 0
+        } else if (selectedCategory === 'physio') {
+          actualId = index + 100; // Physio starts at 100
+        }
+        return { feedback, id: actualId };
+      })
       .filter(({ feedback, id }) => {
         const isNotUsed = !usedFeedbacks.includes(id);
         const matchesSearch = feedback.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === 'all' ||
-          (selectedCategory === 'dental' && feedback.toLowerCase().includes('dental')) ||
-          (selectedCategory === 'physio' && (feedback.toLowerCase().includes('physio') || feedback.toLowerCase().includes('therapy')));
-        return isNotUsed && matchesSearch && matchesCategory;
+        return isNotUsed && matchesSearch;
       });
   };
 
@@ -119,7 +129,7 @@ const StaffQRView = () => {
   };
 
   const filteredFeedbacks = getFilteredFeedbacks();
-  const availableCount = feedbackMessages.length - usedFeedbacks.length;
+  const availableCount = getAllFeedbacks().length - usedFeedbacks.length;
 
   return (
     <div className="staff-qr-view">
@@ -163,19 +173,19 @@ const StaffQRView = () => {
             className={`filter-btn ${selectedCategory === 'all' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('all')}
           >
-            All ({availableCount})
+            All ({getAllFeedbacks().length})
           </button>
           <button
             className={`filter-btn ${selectedCategory === 'dental' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('dental')}
           >
-            🦷 Dental
+            🦷 Dental ({getCategoryCount('dental')})
           </button>
           <button
             className={`filter-btn ${selectedCategory === 'physio' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('physio')}
           >
-            💪 Physio
+            💪 Physio ({getCategoryCount('physio')})
           </button>
         </div>
       </div>
