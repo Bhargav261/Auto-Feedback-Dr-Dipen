@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import QRCode from 'qrcode';
 import { feedbackMessages } from '../data/feedbackMessages';
 import {
   subscribeToUsedFeedbacks,
@@ -8,7 +9,7 @@ import {
 } from '../firebase/feedbackService';
 import './AdminPanel.css';
 
-const AdminPanel = () => {
+const AdminPanel = ({ onLogout, onBackToHome }) => {
   const [usedFeedbacks, setUsedFeedbacks] = useState([]);
   const [statistics, setStatistics] = useState(null);
   const [view, setView] = useState('available'); // 'available', 'used', 'statistics'
@@ -17,6 +18,9 @@ const AdminPanel = () => {
   const [actionType, setActionType] = useState(null); // 'markUsed' or 'restore'
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [qrCodes, setQrCodes] = useState({});
+
+  const BASE_URL = window.location.origin;
 
   // Subscribe to real-time updates
   useEffect(() => {
@@ -34,6 +38,44 @@ const AdminPanel = () => {
     const stats = await getStatistics();
     setStatistics(stats);
   };
+
+  // Generate QR codes for feedbacks
+  useEffect(() => {
+    const generateQRCodes = async () => {
+      const availableFeedbacks = getAvailableFeedbacks();
+      const usedFeedbacksDetails = getUsedFeedbacksWithDetails();
+      const allFeedbacks = [...availableFeedbacks, ...usedFeedbacksDetails];
+      const newQrCodes = {};
+
+      for (let item of allFeedbacks) {
+        const id = item.id;
+        const url = `${BASE_URL}/review?id=${id}`;
+
+        try {
+          const qrDataUrl = await QRCode.toDataURL(url, {
+            errorCorrectionLevel: 'H',
+            type: 'image/png',
+            quality: 0.95,
+            margin: 2,
+            width: 200,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+            }
+          });
+          newQrCodes[id] = qrDataUrl;
+        } catch (error) {
+          console.error(`Error generating QR code for ID ${id}:`, error);
+        }
+      }
+
+      setQrCodes(newQrCodes);
+    };
+
+    if (usedFeedbacks.length >= 0) {
+      generateQRCodes();
+    }
+  }, [usedFeedbacks, BASE_URL]);
 
   // Get available feedbacks (not used)
   const getAvailableFeedbacks = () => {
@@ -106,10 +148,130 @@ const AdminPanel = () => {
     setTimeout(() => setNotification(null), 3000);
   };
 
+  // Download QR code
+  const handleDownloadQR = (id) => {
+    const qrDataUrl = qrCodes[id];
+    if (!qrDataUrl) return;
+
+    const link = document.createElement('a');
+    link.href = qrDataUrl;
+    link.download = `feedback-qr-${id}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showNotification('📥 QR Code downloaded!', 'success');
+  };
+
+  // Print QR code
+  const handlePrintQR = (id, feedback) => {
+    const qrDataUrl = qrCodes[id];
+    if (!qrDataUrl) return;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print QR Code #${id}</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              min-height: 100vh;
+              margin: 0;
+              padding: 20px;
+            }
+            .print-container {
+              text-align: center;
+              max-width: 600px;
+            }
+            h1 {
+              color: #333;
+              margin-bottom: 10px;
+            }
+            .feedback-id {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              padding: 10px 20px;
+              border-radius: 15px;
+              display: inline-block;
+              margin-bottom: 20px;
+              font-weight: bold;
+            }
+            img {
+              max-width: 400px;
+              width: 100%;
+              border: 3px solid #333;
+              border-radius: 15px;
+              padding: 15px;
+              background: white;
+              box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            }
+            .feedback-text {
+              margin-top: 20px;
+              font-size: 16px;
+              line-height: 1.6;
+              color: #666;
+              font-style: italic;
+              padding: 20px;
+              background: #f8f9fa;
+              border-radius: 10px;
+              border-left: 4px solid #667eea;
+            }
+            .qr-url-print {
+              margin-top: 15px;
+              font-size: 13px;
+              color: #666;
+              font-family: 'Courier New', monospace;
+              background: #f8f9fa;
+              padding: 10px 15px;
+              border-radius: 8px;
+              border: 1px solid #e0e0e0;
+              word-break: break-all;
+            }
+            .instructions {
+              margin-top: 20px;
+              font-size: 14px;
+              color: #999;
+            }
+            @media print {
+              body {
+                padding: 0;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-container">
+            <h1>Ansh Dental And Physio Care</h1>
+            <div class="feedback-id">Feedback #${id}</div>
+            <img src="${qrDataUrl}" alt="QR Code ${id}" />
+            <div class="qr-url-print">${BASE_URL}/review?id=${id}</div>
+            <div class="feedback-text">"${feedback}"</div>
+            <div class="instructions">
+              Scan this QR code to leave a review
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
+  };
+
   // Logout
   const handleLogout = () => {
     sessionStorage.removeItem('adminAuth');
-    window.location.href = '/';
+    if (onLogout) {
+      onLogout();
+    } else {
+      window.location.href = '/';
+    }
   };
 
   const availableFeedbacks = getAvailableFeedbacks();
@@ -168,6 +330,18 @@ const AdminPanel = () => {
                   <span className="feedback-id">#{id}</span>
                   <span className="status-badge available">Available</span>
                 </div>
+                {qrCodes[id] ? (
+                  <div className="qr-code-container">
+                    <img
+                      src={qrCodes[id]}
+                      alt={`QR Code ${id}`}
+                      className="admin-qr-code"
+                    />
+                    <div className="qr-url">{BASE_URL}/review?id={id}</div>
+                  </div>
+                ) : (
+                  <div className="qr-loading-small">Generating QR...</div>
+                )}
                 <div className="feedback-text">"{feedback}"</div>
                 <button
                   onClick={() => confirmAction(feedback, id, 'markUsed')}
@@ -176,6 +350,22 @@ const AdminPanel = () => {
                 >
                   ✓ Mark as Used
                 </button>
+                <div className="qr-actions">
+                  <button
+                    onClick={() => handleDownloadQR(id)}
+                    className="qr-action-btn download"
+                    disabled={!qrCodes[id]}
+                  >
+                    📥 Download
+                  </button>
+                  <button
+                    onClick={() => handlePrintQR(id, feedback)}
+                    className="qr-action-btn print"
+                    disabled={!qrCodes[id]}
+                  >
+                    🖨️ Print
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -195,6 +385,18 @@ const AdminPanel = () => {
                     <span className="feedback-id">#{item.id}</span>
                     <span className="status-badge used">Used</span>
                   </div>
+                  {qrCodes[item.id] ? (
+                    <div className="qr-code-container">
+                      <img
+                        src={qrCodes[item.id]}
+                        alt={`QR Code ${item.id}`}
+                        className="admin-qr-code"
+                      />
+                      <div className="qr-url">{BASE_URL}/review?id={item.id}</div>
+                    </div>
+                  ) : (
+                    <div className="qr-loading-small">Generating QR...</div>
+                  )}
                   <div className="feedback-text">"{item.feedback}"</div>
                   <div className="used-info">
                     📅 {new Date(item.markedDate).toLocaleString()}
@@ -206,6 +408,22 @@ const AdminPanel = () => {
                   >
                     ↩️ Restore
                   </button>
+                  <div className="qr-actions">
+                    <button
+                      onClick={() => handleDownloadQR(item.id)}
+                      className="qr-action-btn download"
+                      disabled={!qrCodes[item.id]}
+                    >
+                      📥 Download
+                    </button>
+                    <button
+                      onClick={() => handlePrintQR(item.id, item.feedback)}
+                      className="qr-action-btn print"
+                      disabled={!qrCodes[item.id]}
+                    >
+                      🖨️ Print
+                    </button>
+                  </div>
                 </div>
               ))
             )}
