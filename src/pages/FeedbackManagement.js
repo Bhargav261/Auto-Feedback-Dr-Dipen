@@ -76,7 +76,7 @@ const FeedbackManagement = () => {
     };
 
     generateQRCodes();
-  }, [usedFeedbacks, searchTerm, selectedCategory, BASE_URL, getFilteredFeedbacks, getUsedFeedbacksWithDetails]);
+  }, [usedFeedbacks, searchTerm, selectedCategory, BASE_URL]);
 
   // Get available feedbacks
   const getFilteredFeedbacks = () => {
