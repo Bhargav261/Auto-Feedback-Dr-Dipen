@@ -5,21 +5,27 @@ const AdminLogin = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Default admin password - Change this to your own password
   const ADMIN_PASSWORD = 'admin2024';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    // Simulate authentication delay (remove in production or keep for UX)
+    await new Promise(resolve => setTimeout(resolve, 800));
 
     if (password === ADMIN_PASSWORD) {
-      setError('');
       // Store auth in sessionStorage (cleared when browser closes)
       sessionStorage.setItem('adminAuth', 'true');
       onLogin(true);
     } else {
       setError('Incorrect password. Please try again.');
       setPassword('');
+      setLoading(false);
     }
   };
 
@@ -46,8 +52,9 @@ const AdminLogin = ({ onLogin }) => {
               type="button"
               className="show-password-btn"
               onClick={() => setShowPassword(!showPassword)}
+              title={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? '👁️' : '👁️‍🗨️'}
+              {showPassword ? '🙈' : '👁️'}
             </button>
           </div>
 
@@ -57,10 +64,26 @@ const AdminLogin = ({ onLogin }) => {
             </div>
           )}
 
-          <button type="submit" className="login-button">
-            🔓 Login
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? (
+              <>
+                <span className="login-spinner">⏳</span>
+                Authenticating...
+              </>
+            ) : (
+              <>🔓 Login</>
+            )}
           </button>
         </form>
+
+        {loading && (
+          <div className="login-loading-overlay">
+            <div className="login-loader">
+              <div className="loader-spinner">🔐</div>
+              <p>Verifying credentials...</p>
+            </div>
+          </div>
+        )}
 
         <div className="admin-help">
           <p className="help-text">

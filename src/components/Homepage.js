@@ -1,46 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import FeedbackList from './FeedbackList';
-import AdminPanel from './AdminPanel';
-import AdminLogin from './AdminLogin';
-import StaffQRView from './StaffQRView';
 import './Homepage.css';
 
 const Homepage = () => {
-  const [showStaffLogin, setShowStaffLogin] = useState(false);
-  const [isStaffLoggedIn, setIsStaffLoggedIn] = useState(false);
-  const [activeView, setActiveView] = useState('home'); // 'home', 'reviews', 'admin'
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check if staff is already logged in
-    const authStatus = sessionStorage.getItem('adminAuth');
-    setIsStaffLoggedIn(authStatus === 'true');
-  }, []);
-
-  const handleStaffLogin = (status) => {
-    setIsStaffLoggedIn(status);
-    setShowStaffLogin(false);
-    setActiveView('admin');
+  const handleStaffLoginClick = () => {
+    navigate('/login');
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('adminAuth');
-    setIsStaffLoggedIn(false);
-    setActiveView('home');
-  };
-
-  // If staff login modal is open
-  if (showStaffLogin && !isStaffLoggedIn) {
-    return <AdminLogin onLogin={handleStaffLogin} />;
-  }
-
-  // If staff is logged in and in admin view
-  if (isStaffLoggedIn && activeView === 'admin') {
-    return <AdminPanel onLogout={handleLogout} onBackToHome={() => setActiveView('home')} />;
-  }
-
-  // Main Homepage
   return (
     <div className="homepage-container">
       {/* Header Navigation */}
@@ -50,41 +18,11 @@ const Homepage = () => {
             <h1 className="logo">Ansh Dental And Physio Care</h1>
             <p className="tagline">Your Complete Healthcare Solution</p>
           </div>
-
-          <nav className="main-nav">
-            <button
-              className={`nav-link ${activeView === 'home' ? 'active' : ''}`}
-              onClick={() => setActiveView('home')}
-            >
-              🏠 Home
-            </button>
-            <button
-              className={`nav-link ${activeView === 'reviews' ? 'active' : ''}`}
-              onClick={() => setActiveView('reviews')}
-            >
-              📝 Reviews
-            </button>
-            {isStaffLoggedIn && (
-              <button
-                className={`nav-link ${activeView === 'admin' ? 'active' : ''}`}
-                onClick={() => setActiveView('admin')}
-              >
-                🔐 Admin
-              </button>
-            )}
-          </nav>
-
-          {isStaffLoggedIn && (
-            <button onClick={handleLogout} className="logout-btn-header">
-              🚪 Logout
-            </button>
-          )}
         </div>
       </header>
 
       {/* Content Area */}
       <main className="homepage-content">
-        {activeView === 'home' && (
           <>
             {/* Hero Section */}
             <section className="hero-section">
@@ -94,12 +32,6 @@ const Homepage = () => {
                   Providing comprehensive dental and physiotherapy services with care and compassion
                 </p>
                 <div className="hero-buttons">
-                  <button
-                    className="hero-btn primary"
-                    onClick={() => setActiveView('reviews')}
-                  >
-                    📝 Leave a Review
-                  </button>
                   <button className="hero-btn secondary">
                     📞 Book Appointment
                   </button>
@@ -191,17 +123,6 @@ const Homepage = () => {
               </div>
             </section>
           </>
-        )}
-
-        {activeView === 'reviews' && (
-          <div className="reviews-view">
-            {isStaffLoggedIn ? (
-              <StaffQRView />
-            ) : (
-              <FeedbackList isStaffView={false} />
-            )}
-          </div>
-        )}
       </main>
 
       {/* Footer */}
@@ -212,25 +133,18 @@ const Homepage = () => {
             <p>Your trusted partner in health and wellness</p>
           </div>
           <div className="footer-section">
-            <h4>Quick Links</h4>
-            <button onClick={() => setActiveView('home')} className="footer-link">Home</button>
-            <button onClick={() => setActiveView('reviews')} className="footer-link">Leave Review</button>
-          </div>
-          <div className="footer-section">
             <h4>Contact</h4>
             <p>📞 +1 (555) 123-4567</p>
             <p>✉️ info@anshcare.com</p>
           </div>
-          {!isStaffLoggedIn && (
-            <div className="footer-section">
-              <button
-                onClick={() => setShowStaffLogin(true)}
-                className="staff-login-footer"
-              >
-                🔐 Staff Login
-              </button>
-            </div>
-          )}
+          <div className="footer-section">
+            <button
+              onClick={handleStaffLoginClick}
+              className="staff-login-footer"
+            >
+              🔐 Staff Login
+            </button>
+          </div>
         </div>
         <div className="footer-bottom">
           <p>&copy; 2024 Ansh Dental And Physio Care. All rights reserved.</p>

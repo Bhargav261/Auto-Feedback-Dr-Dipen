@@ -98,10 +98,12 @@
   padding: 5px 10px;
   border-radius: 5px;
   transition: background 0.2s ease;
+  top:0;
+  width:40px
 }
 
 .show-password-btn:hover {
-  background: #f0f0f0;
+  /* background: #f0f0f0; */
 }
 
 .error-message {
@@ -133,6 +135,93 @@
 
 .login-button:active {
   transform: translateY(0);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Login Loading Overlay */
+.login-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(5px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.login-loader {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 60px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loader-spinner {
+  font-size: 72px;
+  animation: bounce 1s ease-in-out infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.login-loader p {
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+  margin: 0;
 }
 
 .admin-help {
