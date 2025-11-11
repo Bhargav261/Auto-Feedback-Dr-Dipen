@@ -335,7 +335,7 @@ const FeedbackManagement = () => {
 
         {/* Used Tab */}
         {activeTab === 'used' && (
-          <div className="feedbacks-grid">
+          <div>
             {usedFeedbacksDetails.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-icon">🎉</div>
@@ -343,39 +343,41 @@ const FeedbackManagement = () => {
                 <p>Used feedbacks will appear here</p>
               </div>
             ) : (
-              usedFeedbacksDetails.map((item) => (
-                <div key={item.id} className="feedback-card used">
-                  <div className="card-header">
-                    <span className="feedback-id">#{item.id}</span>
-                    <span className="status-badge used">Used</span>
-                  </div>
-                  {qrCodes[item.id] ? (
-                    <div className="qr-section">
-                      <img src={qrCodes[item.id]} alt={`QR ${item.id}`} className="qr-image" />
-                      <div className="qr-url">{BASE_URL}/review?id={item.id}</div>
+              <div className="feedbacks-grid">
+                {usedFeedbacksDetails.map((item) => (
+                  <div key={item.id} className="feedback-card used">
+                    <div className="card-header">
+                      <span className="feedback-id">#{item.id}</span>
+                      <span className="status-badge used">Used</span>
                     </div>
-                  ) : (
-                    <div className="qr-loading">Generating...</div>
-                  )}
-                  <div className="feedback-text">"{item.feedback}"</div>
-                  <div className="used-date">📅 {new Date(item.markedDate).toLocaleString()}</div>
-                  <button
-                    onClick={() => confirmAction(item.feedback, item.id, 'restore')}
-                    className="action-btn secondary"
-                    disabled={loading}
-                  >
-                    ↩️ Restore
-                  </button>
-                  <div className="qr-actions">
-                    <button onClick={() => handleDownloadQR(item.id)} className="qr-btn download">
-                      📥 Download
+                    {qrCodes[item.id] ? (
+                      <div className="qr-section">
+                        <img src={qrCodes[item.id]} alt={`QR ${item.id}`} className="qr-image" />
+                        <div className="qr-url">{BASE_URL}/review?id={item.id}</div>
+                      </div>
+                    ) : (
+                      <div className="qr-loading">Generating...</div>
+                    )}
+                    <div className="feedback-text">"{item.feedback}"</div>
+                    <div className="used-date">📅 {new Date(item.markedDate).toLocaleString()}</div>
+                    <button
+                      onClick={() => confirmAction(item.feedback, item.id, 'restore')}
+                      className="action-btn secondary"
+                      disabled={loading}
+                    >
+                      ↩️ Restore
                     </button>
-                    <button onClick={() => handlePrintQR(item.id, item.feedback)} className="qr-btn print">
-                      🖨️ Print
-                    </button>
+                    <div className="qr-actions">
+                      <button onClick={() => handleDownloadQR(item.id)} className="qr-btn download">
+                        📥 Download
+                      </button>
+                      <button onClick={() => handlePrintQR(item.id, item.feedback)} className="qr-btn print">
+                        🖨️ Print
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         )}

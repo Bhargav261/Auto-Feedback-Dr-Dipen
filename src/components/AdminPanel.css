@@ -29,7 +29,7 @@
 
 .logout-btn {
   padding: 12px 24px;
-  background: #f44336;
+  background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -40,9 +40,9 @@
 }
 
 .logout-btn:hover {
-  background: #d32f2f;
+  background: linear-gradient(135deg, #d81b60 0%, #ad1457 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+  box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
 }
 
 /* Navigation */
@@ -319,25 +319,25 @@
 }
 
 .qr-action-btn.download {
-  background: #2196F3;
+  background: linear-gradient(135deg, #26a69a 0%, #4db6ac 100%);
   color: white;
 }
 
 .qr-action-btn.download:hover:not(:disabled) {
-  background: #1976D2;
+  background: linear-gradient(135deg, #00897b 0%, #26a69a 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+  box-shadow: 0 5px 15px rgba(38, 166, 154, 0.4);
 }
 
 .qr-action-btn.print {
-  background: #9C27B0;
+  background: linear-gradient(135deg, #1976d2 0%, #00bcd4 100%);
   color: white;
 }
 
 .qr-action-btn.print:hover:not(:disabled) {
-  background: #7B1FA2;
+  background: linear-gradient(135deg, #0d47a1 0%, #0097a7 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+  box-shadow: 0 5px 15px rgba(25, 118, 210, 0.4);
 }
 
 /* Empty State */

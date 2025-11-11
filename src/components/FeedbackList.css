@@ -278,22 +278,23 @@
 }
 
 .action-btn.download {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #26a69a 0%, #4db6ac 100%);
 }
 
 .action-btn.download:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00897b 0%, #26a69a 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(38, 166, 154, 0.4);
 }
 
 .action-btn.print {
-  background: #48bb78;
+  background: linear-gradient(135deg, #1976d2 0%, #00bcd4 100%);
 }
 
 .action-btn.print:hover:not(:disabled) {
-  background: #38a169;
+  background: linear-gradient(135deg, #0d47a1 0%, #0097a7 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+  box-shadow: 0 5px 15px rgba(25, 118, 210, 0.4);
 }
 
 /* Empty State */
