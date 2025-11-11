@@ -110,6 +110,18 @@ const FeedbackList = () => {
       });
   };
 
+  // Copy URL to clipboard
+  const copyURL = (id) => {
+    const url = `${BASE_URL}/review?id=${id}`;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        alert('📋 URL copied to clipboard!');
+      })
+      .catch(() => {
+        alert('Failed to copy URL. Please copy manually.');
+      });
+  };
+
   // Print specific QR code
   const printQR = (id) => {
     const qrDataUrl = qrCodes[id];
@@ -248,8 +260,17 @@ const FeedbackList = () => {
                 ) : (
                   <div className="qr-loading">Generating QR...</div>
                 )}
-                <div className="qr-url">
-                  {BASE_URL}/review?id={id}
+                <div className="qr-url-container">
+                  <div className="qr-url">
+                    {BASE_URL}/review?id={id}
+                  </div>
+                  <button
+                    onClick={() => copyURL(id)}
+                    className="copy-url-btn"
+                    title="Copy URL"
+                  >
+                    📋
+                  </button>
                 </div>
               </div>
 

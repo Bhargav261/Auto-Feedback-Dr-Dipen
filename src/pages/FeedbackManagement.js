@@ -17,7 +17,7 @@ const FeedbackManagement = () => {
   const [statistics, setStatistics] = useState(null);
   const [qrCodes, setQrCodes] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('dental');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [actionType, setActionType] = useState(null);
@@ -213,6 +213,18 @@ const FeedbackManagement = () => {
     setTimeout(() => printWindow.print(), 250);
   };
 
+  // Copy URL to clipboard
+  const handleCopyURL = (id) => {
+    const url = `${BASE_URL}/review?id=${id}`;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        showNotification('📋 URL copied to clipboard!', 'success');
+      })
+      .catch(() => {
+        showNotification('❌ Failed to copy URL', 'error');
+      });
+  };
+
   // Show notification
   const showNotification = (message, type) => {
     setNotification({ message, type });
@@ -306,7 +318,16 @@ const FeedbackManagement = () => {
                   {qrCodes[id] ? (
                     <div className="qr-section">
                       <img src={qrCodes[id]} alt={`QR ${id}`} className="qr-image" />
-                      <div className="qr-url">{BASE_URL}/review?id={id}</div>
+                      <div className="qr-url-container">
+                        <div className="qr-url">{BASE_URL}/review?id={id}</div>
+                        <button
+                          onClick={() => handleCopyURL(id)}
+                          className="copy-url-btn"
+                          title="Copy URL"
+                        >
+                          📋
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="qr-loading">Generating...</div>
@@ -353,7 +374,16 @@ const FeedbackManagement = () => {
                     {qrCodes[item.id] ? (
                       <div className="qr-section">
                         <img src={qrCodes[item.id]} alt={`QR ${item.id}`} className="qr-image" />
-                        <div className="qr-url">{BASE_URL}/review?id={item.id}</div>
+                        <div className="qr-url-container">
+                          <div className="qr-url">{BASE_URL}/review?id={item.id}</div>
+                          <button
+                            onClick={() => handleCopyURL(item.id)}
+                            className="copy-url-btn"
+                            title="Copy URL"
+                          >
+                            📋
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <div className="qr-loading">Generating...</div>
